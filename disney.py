@@ -57,22 +57,23 @@ def get_availability():
     for date in config["dates"]:
         for time in config["times"]:
             for restaurant in config["restaurants"]:
-                url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{config['restaurants'][restaurant]['id']};entityType=restaurant/table-service/2/{date}/?mealPeriod={config['times'][time]}"
-                response = requests.get(url, headers=headers)
-                data = response.json()
-                if config["logging"]: print(data)
-                if "unavailableReason" in data:
-                    msg = f"{restaurant} ({date}, {time}) is unavailable"
-                else:
-                    offers = data["offers"]
-                    restaurantURL = config["restaurants"][restaurant]["url"]
-                    restaurantURL = shorten_url(restaurantURL)
-                    msg = f"{restaurant} ({date}, {time}) is available at {restaurantURL}"
-                    for recipient in config["recipients"]:
-                        send_email(config["recipients"][recipient], msg)
-                    print("Email sent")
-                print(msg)
-                sleep(config["betweenRequestDelay"])
+                for party_size in config["partySizes"]:
+                    url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{config['restaurants'][restaurant]['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][time]}"
+                    response = requests.get(url, headers=headers)
+                    data = response.json()
+                    if config["logging"]: print(data)
+                    if "unavailableReason" in data:
+                        msg = f"{restaurant} ({date}, {time}) for {party_size} is unavailable"
+                    else:
+                        offers = data["offers"]
+                        restaurantURL = config["restaurants"][restaurant]["url"]
+                        restaurantURL = shorten_url(restaurantURL)
+                        msg = f"{restaurant} ({date}, {time}) for {party_size} is available at {restaurantURL}"
+                        for recipient in config["recipients"]:
+                            send_email(config["recipients"][recipient], msg)
+                        print("Email sent")
+                    print(msg)
+                    sleep(config["betweenRequestDelay"])
 
 while True:
     get_availability()
