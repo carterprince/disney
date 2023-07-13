@@ -53,6 +53,9 @@ headers = {
     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
 }
 
+# Create an empty list to track notifications
+notified_reservations = []
+
 def get_availability():
     for date in config["dates"]:
         for time in config["times"]:
@@ -69,9 +72,18 @@ def get_availability():
                         restaurantURL = config["restaurants"][restaurant]["url"]
                         restaurantURL = shorten_url(restaurantURL)
                         msg = f"{restaurant} ({date}, {time}) for {party_size} is available at {restaurantURL}"
-                        for recipient in config["recipients"]:
-                            send_email(config["recipients"][recipient], msg)
-                        print("Email sent")
+                        
+                        # Generate a unique key for this reservation
+                        reservation_key = f"{restaurant}_{date}_{time}_{party_size}"
+                        
+                        # Only send an email if we haven't notified about this reservation yet
+                        if reservation_key not in notified_reservations:
+                            for recipient in config["recipients"]:
+                                send_email(config["recipients"][recipient], msg)
+                            print("Email sent")
+                            
+                            # Add this reservation to the notified list
+                            notified_reservations.append(reservation_key)
                     print(msg)
                     sleep(config["betweenRequestDelay"])
 
