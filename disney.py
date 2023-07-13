@@ -11,9 +11,10 @@ with open("config.json") as f:
     config = f.read()
 
 # remove lines that start with //
-config = "\n".join([line for line in config.split("\n") if not line.strip().startswith("//")])
-print(config)
-config = json.loads(config)
+config_text = "\n".join([line for line in config.split("\n") if not line.strip().startswith("//")])
+config = json.loads(config_text)
+if config["logging"]:
+    print(config_text)
 
 emailadmin = config["emailadmin"]
 password = config["password"]
