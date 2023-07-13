@@ -55,11 +55,11 @@ headers = {
 notified_reservations = []
 
 def get_availability(config):
-    for date in config["dates"]:
-        for time in config["times"]:
-            for restaurant in config["restaurants"]:
-                for party_size in config["partySizes"]:
-                    url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{config['restaurants'][restaurant]['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][time]}"
+    for restaurant in config["restaurants"]:
+        for time in config["restaurants"][restaurant]["times"]:
+            for date in config["restaurants"][restaurant]["dates"]:
+                for party_size in config["restaurants"][restaurant]["partySizes"]:
+                    url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{config['restaurants'][restaurant]['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][f'{time}']}"
                     response = requests.get(url, headers=headers)
                     data = response.json()
                     if config["logging"]: print(data)
