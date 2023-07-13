@@ -7,22 +7,20 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import pyshorteners
 
-with open("config.json") as f:
-    config = f.read()
+def get_config():
+    with open("config.json") as f:
+        config = f.read()
+    # remove lines that start with //
+    config_text = "\n".join([line for line in config.split("\n") if not line.strip().startswith("//")])
+    config = json.loads(config_text)
+    if config["logging"]:
+        print(config_text)
+    return config
 
-# remove lines that start with //
-config_text = "\n".join([line for line in config.split("\n") if not line.strip().startswith("//")])
-config = json.loads(config_text)
-if config["logging"]:
-    print(config_text)
-
-emailadmin = config["emailadmin"]
-password = config["password"]
-
-def send_email(email, msg):
+def send_email(emailadmin, password, email, msg):
     # create a message
     message = MIMEMultipart()
-    message["From"] = config["emailadmin"]
+    message["From"] = emailadmin
     message["To"] = email
     message["Subject"] = "Reservation Available"
     message.attach(MIMEText(msg, "plain"))
@@ -56,7 +54,7 @@ headers = {
 # Create an empty list to track notifications
 notified_reservations = []
 
-def get_availability():
+def get_availability(config):
     for date in config["dates"]:
         for time in config["times"]:
             for restaurant in config["restaurants"]:
@@ -79,7 +77,7 @@ def get_availability():
                         # Only send an email if we haven't notified about this reservation yet
                         if reservation_key not in notified_reservations:
                             for recipient in config["recipients"]:
-                                send_email(config["recipients"][recipient], msg)
+                                send_email(config["emailadmin"], config["password"], config["recipients"][recipient], msg)
                             print("Email sent")
                             
                             # Add this reservation to the notified list
@@ -88,5 +86,6 @@ def get_availability():
                     sleep(config["betweenRequestDelay"])
 
 while True:
-    get_availability()
+    config = get_config()
+    get_availability(config)
     sleep(config["sleepAfterDelay"])
