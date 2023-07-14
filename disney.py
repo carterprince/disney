@@ -67,7 +67,18 @@ def get_availability(config):
                     if "unavailableReason" in data:
                         msg = f"{name} ({date}, {time}) for {party_size} is unavailable"
                     else:
-                        offers = data["offers"]
+                        try:
+                            offers = data["offers"]
+                        except Exception as e:
+                            print("Error parsing response:")
+                            print(e)
+                            print(response)
+                            print(config)
+                            with open("error.log", "w") as f:
+                                f.write("Error: "+str(e))
+                                f.write("\nResponse: "+str(response))
+                                f.write("\nConfig: "+str(config))
+                            continue
                         restaurantURL = restaurant["url"]
                         restaurantURL = shorten_url(restaurantURL)
                         msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
