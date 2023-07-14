@@ -56,23 +56,24 @@ notified_reservations = []
 
 def get_availability(config):
     for restaurant in config["restaurants"]:
-        for time in config["restaurants"][restaurant]["times"]:
-            for date in config["restaurants"][restaurant]["dates"]:
-                for party_size in config["restaurants"][restaurant]["partySizes"]:
-                    url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{config['restaurants'][restaurant]['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][f'{time}']}"
+        for time in restaurant["times"]:
+            for date in restaurant["dates"]:
+                for party_size in restaurant["partySizes"]:
+                    name = restaurant['name']
+                    url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{restaurant['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][f'{time}']}"
                     response = requests.get(url, headers=headers)
                     data = response.json()
                     if config["logging"]: print(data)
                     if "unavailableReason" in data:
-                        msg = f"{restaurant} ({date}, {time}) for {party_size} is unavailable"
+                        msg = f"{name} ({date}, {time}) for {party_size} is unavailable"
                     else:
                         offers = data["offers"]
-                        restaurantURL = config["restaurants"][restaurant]["url"]
+                        restaurantURL = restaurant["url"]
                         restaurantURL = shorten_url(restaurantURL)
-                        msg = f"{restaurant} ({date}, {time}) for {party_size} is available at {restaurantURL}"
+                        msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
                         
                         # Generate a unique key for this reservation
-                        reservation_key = f"{restaurant}_{date}_{time}_{party_size}"
+                        reservation_key = f"{name}_{date}_{time}_{party_size}"
                         
                         # Only send an email if we haven't notified about this reservation yet
                         if reservation_key not in notified_reservations:
