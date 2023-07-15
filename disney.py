@@ -62,7 +62,18 @@ def get_availability(config):
                     name = restaurant['name']
                     url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{restaurant['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][f'{time}']}"
                     response = requests.get(url, headers=headers)
-                    data = response.json()
+                    try:
+                        data = response.json()
+                    except Exception as e:
+                        print("Error parsing response:")
+                        print(e)
+                        print(response)
+                        print(config)
+                        with open("error.log", "w") as f:
+                            f.write("Error: "+str(e))
+                            f.write("\nResponse: "+str(response))
+                            f.write("\nConfig: "+str(config))
+                        continue
                     if config["logging"]: print(data)
                     if "unavailableReason" in data:
                         msg = f"{name} ({date}, {time}) for {party_size} is unavailable"
