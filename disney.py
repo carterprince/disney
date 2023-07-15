@@ -131,8 +131,8 @@ def get_availability(config):
                     print(msg)
                     sleep(config["betweenRequestDelay"])
 
-while True:
-    print("Reading config.json...")
-    config = get_config()
-    get_availability(config)
-    sleep(config["sleepAfterDelay"])
+#while True:
+#    print("Reading config.json...")
+config = get_config()
+get_availability(config)
+#sleep(config["sleepAfterDelay"])
