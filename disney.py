@@ -102,9 +102,9 @@ while True:
         print("Error getting availability:")
         print(e)
         print(config)
-        with open("error.log", "w") as f:
-            f.write("Error Time: "+str(datetime.now()))
+        with open("error.log", "a") as f:
+            f.write("\n\nError Time: "+str(datetime.now()))
             f.write("\n\nError: \n"+str(e))
             f.write("\n\nTraceback: \n"+traceback.format_exc())
-            f.write("\n\nConfig: "+str(config))
+            f.write("\n\nConfig: \n"+str(config))
     sleep(config["sleepAfterDelay"])
