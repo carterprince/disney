@@ -6,6 +6,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import pyshorteners
+from datetime import datetime
 
 def get_config():
     with open("config.json") as f:
@@ -100,6 +101,7 @@ while True:
         print(e)
         print(config)
         with open("error.log", "w") as f:
+            f.write(str(datetime.now()))
             f.write("Error: "+str(e))
             f.write("\nConfig: "+str(config))
     sleep(config["sleepAfterDelay"])
