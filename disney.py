@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import pyshorteners
 from datetime import datetime
+import traceback
 
 def get_config():
     with open("config.json") as f:
@@ -91,6 +92,7 @@ def get_availability(config):
                     print(msg)
                     sleep(config["betweenRequestDelay"])
 
+
 while True:
     print("Reading config.json...")
     config = get_config()
@@ -101,7 +103,8 @@ while True:
         print(e)
         print(config)
         with open("error.log", "w") as f:
-            f.write(str(datetime.now()))
-            f.write("Error: "+str(e))
-            f.write("\nConfig: "+str(config))
+            f.write("Error Time: "+str(datetime.now()))
+            f.write("\n\nError: \n"+str(e))
+            f.write("\n\nTraceback: \n"+traceback.format_exc())
+            f.write("\n\nConfig: "+str(config))
     sleep(config["sleepAfterDelay"])
