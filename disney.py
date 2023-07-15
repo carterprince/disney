@@ -61,7 +61,19 @@ def get_availability(config):
                 for party_size in restaurant["partySizes"]:
                     name = restaurant['name']
                     url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{restaurant['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][f'{time}']}"
-                    response = requests.get(url, headers=headers)
+                    try:
+                        response = requests.get(url, headers=headers)
+                    except Exception as e:
+                        print("Error requesting URL:")
+                        print(e)
+                        print(response)
+                        print(config)
+                        with open("error.log", "w") as f:
+                            f.write("Error: "+str(e))
+                            f.write("\nResponse: "+str(response))
+                            f.write("\nConfig: "+str(config))
+                        continue
+
                     try:
                         data = response.json()
                     except Exception as e:
@@ -91,7 +103,18 @@ def get_availability(config):
                                 f.write("\nConfig: "+str(config))
                             continue
                         restaurantURL = restaurant["url"]
-                        restaurantURL = shorten_url(restaurantURL)
+                        try:
+                            restaurantURL = shorten_url(restaurantURL)
+                        except Exception as e:
+                            print("Error shortening URL:")
+                            print(e)
+                            print(response)
+                            print(config)
+                            with open("error.log", "w") as f:
+                                f.write("Error: "+str(e))
+                                f.write("\nResponse: "+str(response))
+                                f.write("\nConfig: "+str(config))
+                            continue
                         msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
                         
                         # Generate a unique key for this reservation
