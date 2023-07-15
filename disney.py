@@ -61,60 +61,15 @@ def get_availability(config):
                 for party_size in restaurant["partySizes"]:
                     name = restaurant['name']
                     url = f"https://disneyworld.disney.go.com/finder/api/v1/explorer-service/dining-availability/%7BC032915C-ACF2-4389-B291-5CACF273897E%7D/wdw/{restaurant['id']};entityType=restaurant/table-service/{party_size}/{date}/?mealPeriod={config['times'][f'{time}']}"
-                    try:
-                        response = requests.get(url, headers=headers)
-                    except Exception as e:
-                        print("Error requesting URL:")
-                        print(e)
-                        print(response)
-                        print(config)
-                        with open("error.log", "w") as f:
-                            f.write("Error: "+str(e))
-                            f.write("\nResponse: "+str(response))
-                            f.write("\nConfig: "+str(config))
-                        continue
-
-                    try:
-                        data = response.json()
-                    except Exception as e:
-                        print("Error parsing response:")
-                        print(e)
-                        print(response)
-                        print(config)
-                        with open("error.log", "w") as f:
-                            f.write("Error: "+str(e))
-                            f.write("\nResponse: "+str(response))
-                            f.write("\nConfig: "+str(config))
-                        continue
+                    response = requests.get(url, headers=headers)
+                    data = response.json()
                     if config["logging"]: print(data)
                     if "unavailableReason" in data:
                         msg = f"{name} ({date}, {time}) for {party_size} is unavailable"
                     else:
-                        try:
-                            offers = data["offers"]
-                        except Exception as e:
-                            print("Error parsing response:")
-                            print(e)
-                            print(response)
-                            print(config)
-                            with open("error.log", "w") as f:
-                                f.write("Error: "+str(e))
-                                f.write("\nResponse: "+str(response))
-                                f.write("\nConfig: "+str(config))
-                            continue
+                        offers = data["offers"]
                         restaurantURL = restaurant["url"]
-                        try:
-                            restaurantURL = shorten_url(restaurantURL)
-                        except Exception as e:
-                            print("Error shortening URL:")
-                            print(e)
-                            print(response)
-                            print(config)
-                            with open("error.log", "w") as f:
-                                f.write("Error: "+str(e))
-                                f.write("\nResponse: "+str(response))
-                                f.write("\nConfig: "+str(config))
-                            continue
+                        restaurantURL = shorten_url(restaurantURL)
                         msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
                         
                         # Generate a unique key for this reservation
@@ -131,8 +86,16 @@ def get_availability(config):
                     print(msg)
                     sleep(config["betweenRequestDelay"])
 
-#while True:
-#    print("Reading config.json...")
-config = get_config()
-get_availability(config)
-#sleep(config["sleepAfterDelay"])
+while True:
+    print("Reading config.json...")
+    config = get_config()
+    try:
+        get_availability(config)
+    except Exception as e:
+        print("Error getting availability:")
+        print(e)
+        print(config)
+        with open("error.log", "w") as f:
+            f.write("Error: "+str(e))
+            f.write("\nConfig: "+str(config))
+    sleep(config["sleepAfterDelay"])
