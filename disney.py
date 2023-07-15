@@ -68,9 +68,10 @@ def get_availability(config):
                         msg = f"{name} ({date}, {time}) for {party_size} is unavailable"
                     else:
                         offers = data["offers"]
-                        restaurantURL = restaurant["url"]
-                        restaurantURL = shorten_url(restaurantURL)
-                        msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
+                        #restaurantURL = restaurant["url"]
+                        #restaurantURL = shorten_url(restaurantURL)
+                        #msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
+                        msg = f"{name} ({date}, {time}) for {party_size} is available"
                         
                         # Generate a unique key for this reservation
                         reservation_key = f"{name}_{date}_{time}_{party_size}"
