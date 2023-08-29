@@ -75,7 +75,7 @@ def get_availability(config):
                         offers = data["offers"]
                         restaurantURL = restaurant["url"]
                         restaurantURL = shorten_url(restaurantURL)
-                        msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL}"
+                        msg = f"{name} ({date}, {time}) for {party_size} is available at {restaurantURL} - Message sent at {datetime.now()}"
                         #msg = f"{name} ({date}, {time}) for {party_size} is available"
                         
                         # Generate a unique key for this reservation
@@ -94,7 +94,7 @@ def get_availability(config):
 
 
 while True:
-    print("Reading config.json...")
+    print("Reading config.json at "+str(datetime.now()))
     config = get_config()
     try:
         get_availability(config)
