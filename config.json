@@ -1,0 +1,41 @@
+{
+    "restaurants": [
+        //{
+        //    "name": "Via Napoli",
+        //    "id": "15525574",
+        //    "url": "https://disneyworld.disney.go.com/dining/epcot/via-napoli/availability-modal",
+        //    "times": ["lunch"],
+        //    "dates": ["2023-09-11"],
+        //    "partySizes": ["2", "3"]
+        //},
+		    //{
+		    //	"name": "Space 220 Lounge",
+		    //	"id": "19634138",
+		    //	"url": "https://disneyworld.disney.go.com/dining/epcot/space-220-lounge/availability-modal",
+		    //	"times": ["lunch"],
+		    //	"dates": ["2023-09-11"],
+		    //  "partySizes": ["2", "3"]
+		    //},
+		    {
+            "name": "Le Cellier",
+            "id": "90001798",
+		        "url": "https://disneyworld.disney.go.com/dine-res/restaurant/le-cellier-steakhouse",
+            "times": ["dinner"],
+            "dates": ["2023-09-15"],
+            "partySizes": ["2", "3"]
+        }
+    ],
+    "times": {
+        "lunch": "80000717",
+        "dinner": "80000714"
+    },
+    "recipients": {
+        "Recipient_1_Name_Here": "example_recipient_here@gmail.com",
+        "Recipient_2_Name_Here": "another_example_recipient_here@gmail.com"
+    },
+    "emailadmin": "sender_here@gmail.com",
+    "password": "imap_password_here",
+    "betweenRequestDelay": 5,
+    "sleepAfterDelay": 50,
+    "logging": false
+}
